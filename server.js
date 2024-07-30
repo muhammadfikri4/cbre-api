@@ -110,7 +110,7 @@ app.get('/map', function (req, res) {
 		`;
 	}
 	else if(params_q === undefined && params_lat === undefined && params_lon === undefined && params_zoom === undefined ) {
-		return res.status(200).json(return_value);
+		res.status(200).json(return_value);
 	}
 
 	connection.execute({
@@ -130,7 +130,7 @@ app.get('/map', function (req, res) {
 							return_value.numRows = rows.length;
 							return_value.data = rows;
 							return_value.geojson = geojson.parse(rows, {Point: ['LATITUDE', 'LONGITUDE'], exclude: ['LATITUDE', 'LONGITUDE']});
-							return res.status(200).json(return_value);
+							res.status(200).json(return_value);
 						}
 					}
 				});
@@ -152,12 +152,11 @@ app.post('/map-radius-circle', function (req, res) {
 	}
 
 	if(req.body.longitude !== undefined && req.body.latitude !== undefined && req.body.meter_radius !== undefined) {
-		return res.status(200).json(return_value);
 		sql_query = `
 			SELECT
 				*
 			FROM
-				MASTER_BUILDING
+				TESTING.MAPBOX.MASTER_BUILDING
 			WHERE
 				ST_DISTANCE(
 					ST_POINT(LONGITUDE, LATITUDE),
@@ -181,7 +180,7 @@ app.post('/map-radius-circle', function (req, res) {
 								return_value.numRows = rows.length;
 								return_value.data = rows;
 								return_value.geojson = geojson.parse(rows, {Point: ['LATITUDE', 'LONGITUDE'], exclude: ['LATITUDE', 'LONGITUDE']});
-								return res.status(200).json(return_value);
+								res.status(200).json(return_value);
 							}
 						}
 					});
@@ -189,8 +188,11 @@ app.post('/map-radius-circle', function (req, res) {
 			}
 		});
 	}
+	else {
+		res.status(403).json(return_value);
+	}
 
-	return res.status(403).json(return_value);
+	
 });
 
 app.listen(3500);
