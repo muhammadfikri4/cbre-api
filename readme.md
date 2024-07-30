@@ -21,4 +21,11 @@ npm install \
 	snowflake-sdk \
 	crypto \
 	fs
+
+npm install -g nodemon
+```
+
+## Run server
+```
+nodemon server.js
 ```
