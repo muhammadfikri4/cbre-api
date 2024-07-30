@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const snowflake = require('snowflake-sdk');
-const fs = require('fs');
+const fs = require('fs-extra');
+const path = require('path'); 
 const geojson = require('geojson');
 const private_key = fs.readFileSync(`files/auth/rsa_key.p8`, `UTF-8`); 
 const app = express();
@@ -192,7 +193,41 @@ app.post('/map-radius-circle', function (req, res) {
 		res.status(403).json(return_value);
 	}
 
-	
+});
+
+// Routing - /map-transportation/:type
+app.get('/map-transportation/:type', async (req, res) => {
+    const { type } = req.params;
+    let filename = 'files\\geojson\\singapore-mrt.geojson';
+    
+    if (type !== 'line') {
+        filename = 'files\\geojson\\singapore-mrt-label.geojson';
+    }
+
+    try {
+        const fp = path.join(__dirname, filename);
+        const data = await fs.readJson(fp);
+
+        const returnValue = {
+            numRows: data.features.length,
+            data: [],
+            geojson: data
+        };
+
+        for (const feature of data.features) {
+            const properties = feature.properties || {};
+            returnValue.data.push({
+                type: properties.type || "",
+                name: properties.name || "",
+                code: properties.code || "",
+                color: properties.color || ""
+            });
+        }
+
+        res.json(returnValue);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.listen(3500);
