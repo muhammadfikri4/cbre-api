@@ -197,10 +197,16 @@ app.post('/map-radius-circle', function (req, res) {
 
 // Routing - /map-transportation/:type
 app.get('/map-transportation/:type', async (req, res) => {
-    const { type } = req.params;
-    let filename = 'files\\geojson\\singapore-mrt.geojson';
+	// Default response
+	return_value = {
+		"numRows": 0,
+		"data": [],
+		"geojson": {}
+	}
+	
+    const filename = 'files\\geojson\\singapore-mrt.geojson';
     
-    if (type !== 'line') {
+    if (req.params.type !== 'line') {
         filename = 'files\\geojson\\singapore-mrt-label.geojson';
     }
 
