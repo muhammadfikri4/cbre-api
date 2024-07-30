@@ -208,7 +208,7 @@ app.get('/map-transportation/:type', async (req, res) => {
         const fp = path.join(__dirname, filename);
         const data = await fs.readJson(fp);
 
-        const returnValue = {
+        const return_value = {
             numRows: data.features.length,
             data: [],
             geojson: data
@@ -216,7 +216,7 @@ app.get('/map-transportation/:type', async (req, res) => {
 
         for (const feature of data.features) {
             const properties = feature.properties || {};
-            returnValue.data.push({
+            return_value.data.push({
                 type: properties.type || "",
                 name: properties.name || "",
                 code: properties.code || "",
@@ -224,7 +224,7 @@ app.get('/map-transportation/:type', async (req, res) => {
             });
         }
 
-        res.json(returnValue);
+        res.json(return_value);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
