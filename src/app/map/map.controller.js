@@ -1,5 +1,6 @@
 const { connection } = require("../../configs/app");
 const path = require("path");
+const geojson = require("geojson");
 
 function mapController(req, res) {
   // Default response
